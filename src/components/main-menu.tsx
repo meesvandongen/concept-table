@@ -86,14 +86,16 @@ export function MainMenu({
 				</Menu.Item>
 
 				<Menu.Divider />
-
+				<Menu.Label>Export</Menu.Label>
 				<Menu.Item
 					disabled={table.getPrePaginationRowModel().rows.length === 0}
 					//export all rows, including from the next page, (still respects filtering and sorting)
 					onClick={() =>
 						handleExportRows(table.getPrePaginationRowModel().rows)
 					}
-					leftSection={<IconDownload />}
+					leftSection={
+						<IconDownload style={{ width: rem(14), height: rem(14) }} />
+					}
 				>
 					Export All Rows
 				</Menu.Item>
@@ -103,7 +105,9 @@ export function MainMenu({
 					}
 					//only export selected rows
 					onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
-					leftSection={<IconDownload />}
+					leftSection={
+						<IconDownload style={{ width: rem(14), height: rem(14) }} />
+					}
 				>
 					Export Selected Rows
 				</Menu.Item>
