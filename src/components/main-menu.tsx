@@ -1,94 +1,113 @@
-import { Menu, rem, ActionIcon, useMantineColorScheme } from "@mantine/core";
+import { ActionIcon, Menu, rem, useMantineColorScheme } from "@mantine/core";
+import { IconDownload } from "@tabler/icons-react";
+import { download, generateCsv, mkConfig } from "export-to-csv"; //or use your library of choice here
+
 import {
-  IconMoon,
-  IconSun,
-  IconSunMoon,
-  IconDots,
-  IconBrandGithub,
-  IconLogin,
-  IconLogout,
+	IconBrandGithub,
+	IconDots,
+	IconMoon,
+	IconSun,
+	IconSunMoon,
 } from "@tabler/icons-react";
-import { getIsLoggedIn } from "../utils";
+import type { MRT_Row, MRT_TableInstance } from "mantine-react-table";
+import type { UnlConcept } from "../api/api";
 
-export function MainMenu() {
-  const { colorScheme, setColorScheme } = useMantineColorScheme();
+const csvConfig = mkConfig({
+	fieldSeparator: ",",
+	decimalSeparator: ".",
+	useKeysAsHeaders: true,
+});
 
-  return (
-    <Menu shadow="md" width={200}>
-      <Menu.Target>
-        <ActionIcon
-          color="gray"
-          size="lg"
-          variant="subtle"
-          style={{
-            marginRight: "auto",
-          }}
-        >
-          <IconDots />
-        </ActionIcon>
-      </Menu.Target>
+export function MainMenu({
+	table,
+}: {
+	table: MRT_TableInstance<UnlConcept>;
+}) {
+	const { colorScheme, setColorScheme } = useMantineColorScheme();
 
-      <Menu.Dropdown>
-        <Menu.Item
-          leftSection={
-            <IconBrandGithub style={{ width: rem(14), height: rem(14) }} />
-          }
-          component="a"
-          href="https://github.com/meesvandongen/anime-table"
-          target="_blank"
-        >
-          Github
-        </Menu.Item>
+	const handleExportRows = (rows: MRT_Row<UnlConcept>[]) => {
+		const rowData = rows.map((row) => row.original);
+		const csv = generateCsv(csvConfig)(rowData as { [key: string]: any }[]);
+		download(csvConfig)(csv);
+	};
 
-        {getIsLoggedIn() ? (
-          <Menu.Item
-            leftSection={
-              <IconLogout style={{ width: rem(14), height: rem(14) }} />
-            }
-            component="a"
-            href="/api/logout"
-          >
-            Logout
-          </Menu.Item>
-        ) : (
-          <Menu.Item
-            leftSection={
-              <IconLogin style={{ width: rem(14), height: rem(14) }} />
-            }
-            component="a"
-            href="/api/login"
-          >
-            Login (MAL)
-          </Menu.Item>
-        )}
+	return (
+		<Menu shadow="md" width={200}>
+			<Menu.Target>
+				<ActionIcon
+					color="gray"
+					size="lg"
+					variant="subtle"
+					style={{
+						marginRight: "auto",
+					}}
+				>
+					<IconDots />
+				</ActionIcon>
+			</Menu.Target>
 
-        <Menu.Divider />
+			<Menu.Dropdown>
+				<Menu.Item
+					leftSection={
+						<IconBrandGithub style={{ width: rem(14), height: rem(14) }} />
+					}
+					component="a"
+					href="https://github.com/meesvandongen/concept-table"
+					target="_blank"
+				>
+					Github
+				</Menu.Item>
 
-        <Menu.Label>Theme</Menu.Label>
-        <Menu.Item
-          onClick={() => setColorScheme("dark")}
-          leftSection={<IconMoon style={{ width: rem(14), height: rem(14) }} />}
-          color={colorScheme === "dark" ? "blue" : undefined}
-        >
-          Dark
-        </Menu.Item>
-        <Menu.Item
-          leftSection={<IconSun style={{ width: rem(14), height: rem(14) }} />}
-          onClick={() => setColorScheme("light")}
-          color={colorScheme === "light" ? "blue" : undefined}
-        >
-          Light
-        </Menu.Item>
-        <Menu.Item
-          leftSection={
-            <IconSunMoon style={{ width: rem(14), height: rem(14) }} />
-          }
-          onClick={() => setColorScheme("auto")}
-          color={colorScheme === "auto" ? "blue" : undefined}
-        >
-          Auto
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
-  );
+				<Menu.Divider />
+
+				<Menu.Label>Theme</Menu.Label>
+				<Menu.Item
+					onClick={() => setColorScheme("dark")}
+					leftSection={<IconMoon style={{ width: rem(14), height: rem(14) }} />}
+					color={colorScheme === "dark" ? "blue" : undefined}
+				>
+					Dark
+				</Menu.Item>
+				<Menu.Item
+					leftSection={<IconSun style={{ width: rem(14), height: rem(14) }} />}
+					onClick={() => setColorScheme("light")}
+					color={colorScheme === "light" ? "blue" : undefined}
+				>
+					Light
+				</Menu.Item>
+				<Menu.Item
+					leftSection={
+						<IconSunMoon style={{ width: rem(14), height: rem(14) }} />
+					}
+					onClick={() => setColorScheme("auto")}
+					color={colorScheme === "auto" ? "blue" : undefined}
+				>
+					Auto
+				</Menu.Item>
+
+				<Menu.Divider />
+
+				<Menu.Item
+					disabled={table.getPrePaginationRowModel().rows.length === 0}
+					//export all rows, including from the next page, (still respects filtering and sorting)
+					onClick={() =>
+						handleExportRows(table.getPrePaginationRowModel().rows)
+					}
+					leftSection={<IconDownload />}
+				>
+					Export All Rows
+				</Menu.Item>
+				<Menu.Item
+					disabled={
+						!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
+					}
+					//only export selected rows
+					onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
+					leftSection={<IconDownload />}
+				>
+					Export Selected Rows
+				</Menu.Item>
+			</Menu.Dropdown>
+		</Menu>
+	);
 }

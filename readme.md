@@ -1,9 +1,9 @@
-# Anime Table
+# Concept Table
 
-An interactive table of most anime series and movies.
+A table based on the Universal Dictionary of Concepts dataset.
 
-https://anime-table.pages.dev/
+https://concept-table.pages.dev/
 
 ## Dataset
 
-https://github.com/meesvandongen/anime-dataset
+https://github.com/dikonov/Universal-Dictionary-of-Concepts/tree/master

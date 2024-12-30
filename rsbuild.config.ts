@@ -4,11 +4,11 @@ import { pluginReact } from "@rsbuild/plugin-react";
 export default defineConfig({
   plugins: [pluginReact()],
   html: {
-    title: "Anime Table",
-    favicon: "./src/assets/ayaya.png",
+    title: "Concept Table",
+    favicon: "./src/assets/idea.png",
     meta: {
       description:
-        "A table containing all Anime from MyAnimeList, easily filterable and sortable.",
+        "A table based on the Universal Dictionary of Concepts",
     },
   },
   server: {

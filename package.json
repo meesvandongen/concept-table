@@ -1,5 +1,5 @@
 {
-  "name": "anime-table",
+  "name": "concept-table",
   "version": "0.1.0",
   "scripts": {
     "dev": "rsbuild dev",
@@ -14,12 +14,14 @@
     "@tanstack/react-query": "^5.62.11",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
+    "export-to-csv": "^1.4.0",
     "mantine-react-table": "^2.0.0-beta.7",
     "papaparse": "^5.4.1",
     "react": "~19.0.0",
     "react-dom": "~19.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@rsbuild/core": "^1.1.13",
     "@rsbuild/plugin-react": "^1.1.0",
     "@types/papaparse": "^5.3.15",
